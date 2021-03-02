@@ -16,6 +16,7 @@ def uploader():
         f = request.files['archivo']
         filename = secure_filename(f.filename)
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        os.system('python yolo_video.py --input people3.mp4')
         return render_template('video_procesing.html')
 
 
@@ -23,6 +24,7 @@ def uploader():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 '''
