@@ -29,7 +29,8 @@ For Tiny YOLOv3, just do in a similar way, just specify model path and anchor pa
 ### WEB server
 
 To run the app localy:
-python app.py
+
+python app.py  
 server runs at http://127.0.0.1:5000/ localy
 select video and after procesing the output can be found at the proyect folder as a .yml file called lista
 
