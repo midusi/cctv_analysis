@@ -13,7 +13,7 @@ KERAS implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YA
 ## Initial setup for model.
 
 1. Clone the repository on your computer.
-2. Download YOLOV3 weights from: [YOLO website](http://pjreddie.com/darknet/yolo/).
+2. Download YOLOV3 weights from: [YOLO website](http://pjreddie.com/darknet/yolo/). Or at this drive link https://drive.google.com/file/d/1NUYrGllK8diIkVZbmIjMqR6BiUhwLgCZ/view?usp=sharing
 3. Convert the YOLO Darknet model to a KERAS model.
 4. Run YOLO detection.
 
