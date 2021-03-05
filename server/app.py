@@ -17,7 +17,7 @@ def uploader():
         filename = secure_filename(f.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
-        os.system(f'python yolo_video.py --input {filepath}')
+        os.system(f'python ../model/yolo_video.py --input {filepath}')
         return render_template('video_procesing.html')
 
 
@@ -26,19 +26,3 @@ def uploader():
 if __name__ == '__main__':
     app.run(debug=True)
 
-
-
-'''
-    @app.route('/ping')
-def ping():
-    return jsonify({"message":"pong!"})
-
-@app.route('/products')
-def getProducts():
-    return jsonify(products)
-
-@app.route('/products/<string:product_name>')    
-def getProduct(product_name):
-    print(product_name)
-    return 'recived'
-    '''

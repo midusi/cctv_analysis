@@ -19,7 +19,6 @@ from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
-'''os.system("python3 archivo.py parametros")'''
 myLista = []
 filepath = "lista.yaml"
 
@@ -30,9 +29,9 @@ def yaml_dump(filepath, data):
 
 class YOLO(object):
     _defaults = {
-        "model_path": 'model_data/yolo.h5',
-        "anchors_path": 'model_data/yolo_anchors.txt',
-        "classes_path": 'model_data/coco_classes.txt',
+        "model_path": '../model/model_data/yolo.h5',
+        "anchors_path": '../model/model_data/yolo_anchors.txt',
+        "classes_path": '../model/model_data/coco_classes.txt',
         "score" : 0.3,
         "iou" : 0.45,
         "model_image_size" : (416, 416),
