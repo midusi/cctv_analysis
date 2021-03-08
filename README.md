@@ -13,12 +13,14 @@ KERAS implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YA
 ## Initial setup for model.
 
 1. Clone the repository on your computer.
-2. Download YOLOV3 weights from: [YOLO website](http://pjreddie.com/darknet/yolo/). Or at this drive link https://drive.google.com/file/d/1NUYrGllK8diIkVZbmIjMqR6BiUhwLgCZ/view?usp=sharing
+2. Download YOLOV3 weights from: [YOLO website](http://pjreddie.com/darknet/yolo/). Or from this drive link https://drive.google.com/file/d/1NUYrGllK8diIkVZbmIjMqR6BiUhwLgCZ/view?usp=sharing , or use de wget instruction above
 3. Convert the YOLO Darknet model to a KERAS model.
 4. Run YOLO detection.
 
 
 wget https://pjreddie.com/media/files/yolov3.weights 
+
+at the model folder run:
 
 python convert.py yolov3.cfg yolov3.weights model_data/yolo.h5
 
@@ -33,7 +35,7 @@ To run the app localy:
 
 python app.py  
 server runs at http://127.0.0.1:5000/ localy,
-select video and after procesing the output can be found at the proyect folder as a .yml file called lista
+select video and after procesing the output can be found at the server folder as a .yml file called lista
 
 
 ### Usage of the model
