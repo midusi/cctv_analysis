@@ -1,6 +1,7 @@
 import os
 from flask import Flask, jsonify, render_template, request, redirect
 from werkzeug.utils import secure_filename
+import uuid
 
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ def upload_file():
 def uploader():
     if request.method == "POST":
         f = request.files['archivo']
-        filename = secure_filename(f.filename)
+        filename = str(uuid.uuid4())
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
         os.system(f'python ../model/yolo_video.py --input {filepath}')
