@@ -19,6 +19,7 @@ KERAS implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YA
 
 
 wget https://pjreddie.com/media/files/yolov3.weights 
+
 python convert.py yolov3.cfg yolov3.weights model_data/yolo.h5
 
 Once weights are converted, model can be used by the next instructions: 
