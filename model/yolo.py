@@ -122,7 +122,10 @@ class YOLO(object):
             })
         myLista.append(len(out_boxes))
         print('Encontre {} personas en {}'.format(len(out_boxes), 'imagen'))
+        end = timer()
+        print('tiempo en procesar frame :', end - start)
         return image
+
 
     def close_session(self):
         self.sess.close()
