@@ -3,7 +3,6 @@
 Class definition of YOLO_v3 style detection model on image and video
 """
 
-import colorsys
 import os
 import yaml
 from timeit import default_timer as timer
@@ -20,6 +19,7 @@ from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
 myLista = []
+accum_FPS = 0
 filepath = "lista.yaml"
 
 def yaml_dump(filepath, data):
@@ -140,6 +140,7 @@ def detect_video(yolo, video_path, output_path=""):
     video_size      = (int(vid.get(cv2.CAP_PROP_FRAME_WIDTH)),
                         int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     accum_time = 0
+    sumExec_time = 0
     curr_fps = 0
     fps = "FPS: ??"
     prev_time = timer()
@@ -153,18 +154,23 @@ def detect_video(yolo, video_path, output_path=""):
         exec_time = curr_time - prev_time
         prev_time = curr_time
         accum_time = accum_time + exec_time
+        sumExec_time = sumExec_time + exec_time
         curr_fps = curr_fps + 1
         if accum_time > 1:
             accum_time = accum_time - 1
             fps = "FPS: " + str(curr_fps)
+            accum_FPS = accum_FPS + curr_fps
             curr_fps = 0
-        print(fps)
+            print(fps)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     contador = 1    
     for cantPersonasFrame in myLista:
         print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
         contador+=1
+    avg_FPS = accum_FPS / contador 
+    print('Tiempo total de ejecucion: ',sumExec_time)
+    print('FPS promedio de ejecucion: ',avg_FPS)  
     yaml_dump(filepath, myLista)
     yolo.close_session()
 
