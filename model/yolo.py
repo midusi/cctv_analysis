@@ -3,6 +3,7 @@
 Class definition of YOLO_v3 style detection model on image and video
 """
 
+import colorsys
 import os
 import yaml
 from timeit import default_timer as timer
@@ -19,7 +20,6 @@ from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
 myLista = []
-accum_FPS = 0
 filepath = "lista.yaml"
 
 def yaml_dump(filepath, data):
@@ -120,8 +120,12 @@ class YOLO(object):
                 self.input_image_shape: [image.size[1], image.size[0]],
                 K.learning_phase(): 0
             })
-        myLista.append(len(out_boxes))
-        print('Encontre {} personas en {}'.format(len(out_boxes), 'imagen'))
+        cantNoPersona = 0
+        for objeto in out_classes:
+            if objeto != 0:
+                cantNoPersona = cantNoPersona + 1
+        myLista.append((len(out_boxes)-cantNoPersona))
+        print('Encontre {} personas en {}'.format((len(out_boxes)-cantNoPersona), 'imagen'))
         end = timer()
         print('tiempo en procesar frame :', end - start)
         return image
@@ -140,6 +144,8 @@ def detect_video(yolo, video_path, output_path=""):
     video_size      = (int(vid.get(cv2.CAP_PROP_FRAME_WIDTH)),
                         int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     accum_time = 0
+    accum_FPS = 0
+
     sumExec_time = 0
     curr_fps = 0
     fps = "FPS: ??"
@@ -168,7 +174,10 @@ def detect_video(yolo, video_path, output_path=""):
     for cantPersonasFrame in myLista:
         print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
         contador+=1
-    avg_FPS = accum_FPS / contador 
+    avg_FPS = accum_FPS / sumExec_time 
+    meanPersons = np.mean(myLista)
+    print('Rendimiento openCv/yolov3-Keras:')
+    print('Personas encontradas en promedio por frame : ',meanPersons)
     print('Tiempo total de ejecucion: ',sumExec_time)
     print('FPS promedio de ejecucion: ',avg_FPS)  
     yaml_dump(filepath, myLista)

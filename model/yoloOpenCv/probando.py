@@ -2,13 +2,20 @@ import sys
 import cv2
 import numpy as np
 import yaml
-filepath = 'listaTini.yaml'
+import os
+from timeit import default_timer as timer
+
+
+
+filepath = 'lista320.yaml'
+
 
 cap = cv2.VideoCapture('people3.mp4')
 whT = 320
 confThreshold = 0.5
 nmsThreshold = 0.3
 myList = []
+accum_FPS = 0
 
 
 classesFile = 'coco_names.txt'
@@ -19,12 +26,18 @@ with open(classesFile,'rt') as f:
 #print(classNames)
 #print(len (classNames))
 
-modelConfiguration = 'yolov3-tiny.cfg'
+modelConfiguration = 'yolov3-tiny.cfg'  
 modelWeights = 'yolov3-tiny.weights'
 
 net = cv2.dnn.readNetFromDarknet(modelConfiguration,modelWeights)
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
+
+accum_time = 0
+sumExec_time = 0
+curr_fps = 0
+fps = "FPS: ??"
+prev_time = timer()
 
 def yaml_dump(filepath, data):
     """guardo datos en un archivo yaml"""
@@ -79,10 +92,32 @@ while True:
     #print(outputs[1].shape)
     #print(outputs[2].shape)
     findObjets(outputs,img)
+    curr_time = timer()
+    exec_time = curr_time - prev_time
+    prev_time = curr_time
+    accum_time = accum_time + exec_time
+    sumExec_time = sumExec_time + exec_time
+    curr_fps = curr_fps + 1
+    if accum_time > 1:
+        accum_time = accum_time - 1
+        fps = "FPS: " + str(curr_fps)
+        accum_FPS = accum_FPS + curr_fps
+        curr_fps = 0
+        print(fps)
     #print(myList)
-    cv2.imshow('Image',img)
+    contador = 1    
+    for cantPersonasFrame in myList:
+        print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
+        contador+=1
+    avg_FPS = accum_FPS / sumExec_time
+    meanPersons = np.mean(myList)
+    print('Rendimiento openCv/yolov3-tiny:')
+    print('Personas encontradas en promedio por frame : ',meanPersons)
+    print('Tiempo total de ejecucion: ',sumExec_time)
+    print('FPS promedio de ejecucion: ',avg_FPS)  
+    #cv2.imshow('Image',img)
     cv2.waitKey(1)
-    print(myList)
+    #print(myList)
     yaml_dump(filepath,myList)
 
 
