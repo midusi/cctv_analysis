@@ -125,9 +125,9 @@ class YOLO(object):
             if objeto != 0:
                 cantNoPersona = cantNoPersona + 1
         myLista.append((len(out_boxes)-cantNoPersona))
-        print('Encontre {} personas en {}'.format((len(out_boxes)-cantNoPersona), 'imagen'))
+        #print('Encontre {} personas en {}'.format((len(out_boxes)-cantNoPersona), 'imagen'))
         end = timer()
-        print('tiempo en procesar frame :', end - start)
+        #print('tiempo en procesar frame :', end - start)
         return image
 
 
@@ -172,7 +172,7 @@ def detect_video(yolo, video_path, output_path=""):
             break
     contador = 1    
     for cantPersonasFrame in myLista:
-        print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
+        #print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
         contador+=1
     avg_FPS = accum_FPS / sumExec_time 
     meanPersons = np.mean(myLista)
