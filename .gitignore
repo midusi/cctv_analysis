@@ -109,5 +109,6 @@ ENV/
 
 # weights
 yolov3.weights
-
+*.weights
+*.mp4
 /.vscode

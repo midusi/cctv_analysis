@@ -176,10 +176,12 @@ def detect_video(yolo, video_path, output_path=""):
         contador+=1
     avg_FPS = accum_FPS / sumExec_time 
     meanPersons = np.mean(myLista)
+    print('Rendimiento: ----------')
     print('Rendimiento openCv/yolov3-Keras:')
     print('Personas encontradas en promedio por frame : ',meanPersons)
     print('Tiempo total de ejecucion: ',sumExec_time)
     print('FPS promedio de ejecucion: ',avg_FPS)  
+    print('-----------------------')
     yaml_dump(filepath, myLista)
     yolo.close_session()
 

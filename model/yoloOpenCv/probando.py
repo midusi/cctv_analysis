@@ -3,14 +3,19 @@ import cv2
 import numpy as np
 import yaml
 import os
-from timeit import default_timer as timer
+from timeit import default_timer as timer 
+#Argunmentos ---> ArchivoVideo.mp4 archivo.cfg archivo.weights]
+videoPath = sys.argv[1]
+cfgPath = sys.argv[2]
+weightsPath = sys.argv[3]
 
 
 
-filepath = 'lista320.yaml'
+
+filepath = 'lista.yaml'
 
 
-cap = cv2.VideoCapture('people3.mp4')
+cap = cv2.VideoCapture(videoPath)
 whT = 320
 confThreshold = 0.5
 nmsThreshold = 0.3
@@ -26,8 +31,8 @@ with open(classesFile,'rt') as f:
 #print(classNames)
 #print(len (classNames))
 
-modelConfiguration = 'yolov3-tiny.cfg'  
-modelWeights = 'yolov3-tiny.weights'
+modelConfiguration = cfgPath  
+modelWeights = weightsPath
 
 net = cv2.dnn.readNetFromDarknet(modelConfiguration,modelWeights)
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
@@ -78,7 +83,8 @@ def findObjets(outputs,img):
 
 while True:
     success, img = cap.read()
-
+    if not success:
+            break
     blob = cv2.dnn.blobFromImage(img,1/255,(whT,whT),[0,0,0],1,crop=False)
     net.setInput(blob)
 
@@ -107,18 +113,16 @@ while True:
     #print(myList)
     contador = 1    
     for cantPersonasFrame in myList:
-        print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
-        contador+=1
-    avg_FPS = accum_FPS / sumExec_time
-    meanPersons = np.mean(myList)
-    print('Rendimiento openCv/yolov3-tiny:')
-    print('Personas encontradas en promedio por frame : ',meanPersons)
-    print('Tiempo total de ejecucion: ',sumExec_time)
-    print('FPS promedio de ejecucion: ',avg_FPS)  
-    #cv2.imshow('Image',img)
-    cv2.waitKey(1)
-    #print(myList)
-    yaml_dump(filepath,myList)
-
-
-
+        #print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
+        contador+=1  
+avg_FPS = accum_FPS / sumExec_time
+meanPersons = np.mean(myList)
+print('Rendimiento: ----------')
+print('Personas encontradas en promedio por frame : ',meanPersons)
+print('Tiempo total de ejecucion: ',sumExec_time)
+print('FPS promedio de ejecucion: ',avg_FPS)  
+print('-----------------------')
+#cv2.imshow('Image',img)
+cv2.waitKey(1)
+#print(myList)
+yaml_dump(filepath,myList)
