@@ -1,0 +1,6 @@
+{
+    "videopath": "./videos",
+    "defaultModel": "../model/keras/yolo_video.py",
+    "kerasModel": "../model/keras/yolo_video.py",
+    "opencvModel": "../model/openCv/openCv.py"
+} 

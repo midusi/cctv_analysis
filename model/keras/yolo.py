@@ -5,7 +5,7 @@ Class definition of YOLO_v3 style detection model on image and video
 
 import colorsys
 import os
-import yaml
+import json
 from timeit import default_timer as timer
 import numpy as np
 import tensorflow.compat.v1.keras.backend as K
@@ -14,24 +14,27 @@ tf.compat.v1.disable_eager_execution()
 from keras.models import load_model
 from keras.layers import Input
 from PIL import Image, ImageFont, ImageDraw
-
 from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
-myLista = []
-filepath = "lista.yaml"
+data = {}
+data['list'] = []
 
-def yaml_dump(filepath, data):
-    """guardo datos en un archivo yaml"""
-    with open(filepath, "w") as file_descriptor:
-        yaml.dump(data, file_descriptor)
 
+def json_write(data):
+    """guardo datos en un archivo json"""
+    with open('data.json', 'w') as file:
+        json.dump(data, file, indent=4)
+
+
+relative_path = os.path.dirname(os.path.relpath(__file__))
+wd = os.getcwd()
 class YOLO(object):
     _defaults = {
-        "model_path": '../model/model_data/yolo.h5',
-        "anchors_path": '../model/model_data/yolo_anchors.txt',
-        "classes_path": '../model/model_data/coco_classes.txt',
+        "model_path": '/../cfg/yolo.h5',
+        "anchors_path": '/../cfg/yolo_anchors.txt',
+        "classes_path": '/../cfg/coco_classes.txt',
         "score" : 0.3,
         "iou" : 0.45,
         "model_image_size" : (416, 416),
@@ -54,21 +57,21 @@ class YOLO(object):
         self.boxes, self.scores, self.classes = self.generate()
 
     def _get_class(self):
-        classes_path = os.path.expanduser(self.classes_path)
+        classes_path = relative_path+str(self.classes_path)
         with open(classes_path) as f:
             class_names = f.readlines()
         class_names = [c.strip() for c in class_names]
         return class_names
 
     def _get_anchors(self):
-        anchors_path = os.path.expanduser(self.anchors_path)
+        anchors_path = relative_path+str(self.anchors_path)
         with open(anchors_path) as f:
             anchors = f.readline()
         anchors = [float(x) for x in anchors.split(',')]
         return np.array(anchors).reshape(-1, 2)
 
     def generate(self):
-        model_path = os.path.expanduser(self.model_path)
+        model_path = relative_path+str(self.model_path)
         assert model_path.endswith('.h5'), 'Keras model or weights must be a .h5 file.'
 
         # Load model, or construct model and load weights.
@@ -87,8 +90,9 @@ class YOLO(object):
                 'Mismatch between model and given anchor and class sizes'
 
         print('{} model, anchors, and classes loaded.'.format(model_path))
-
+        
         # Generate output tensor targets for filtered bounding boxes.
+        # Lo guardamos por las dudas (conf GPU)
         self.input_image_shape = K.placeholder(shape=(2, ))
         if self.gpu_num>=2:
             self.yolo_model = multi_gpu_model(self.yolo_model, gpus=self.gpu_num)
@@ -124,7 +128,7 @@ class YOLO(object):
         for objeto in out_classes:
             if objeto != 0:
                 cantNoPersona = cantNoPersona + 1
-        myLista.append((len(out_boxes)-cantNoPersona))
+        data['list'].append((len(out_boxes)-cantNoPersona))
         #print('Encontre {} personas en {}'.format((len(out_boxes)-cantNoPersona), 'imagen'))
         end = timer()
         #print('tiempo en procesar frame :', end - start)
@@ -171,17 +175,17 @@ def detect_video(yolo, video_path, output_path=""):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     contador = 1    
-    for cantPersonasFrame in myLista:
+    for cantPersonasFrame in data['list']:
         #print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
         contador+=1
     avg_FPS = accum_FPS / sumExec_time 
-    meanPersons = np.mean(myLista)
+    json_write(data)
+    meanPersons = np.mean(data['list'])
     print('Rendimiento: ----------')
     print('Rendimiento openCv/yolov3-Keras:')
     print('Personas encontradas en promedio por frame : ',meanPersons)
     print('Tiempo total de ejecucion: ',sumExec_time)
     print('FPS promedio de ejecucion: ',avg_FPS)  
     print('-----------------------')
-    yaml_dump(filepath, myLista)
     yolo.close_session()
 

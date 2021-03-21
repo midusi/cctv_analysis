@@ -113,3 +113,6 @@ yolov3.weights
 *.weights
 *.mp4
 /.vscode
+
+#data de video en formato json
+/home/tomas/Escritorio/cctv_analysis/server/data.json
