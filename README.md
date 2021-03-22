@@ -7,7 +7,6 @@ A cctv analysis server to asynchronously analyse videos for objects such as pers
 
 KERAS implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YAD2K](https://github.com/allanzelener/YAD2K).
 
-
 ---
 
 ## Initial setup for model.
@@ -18,11 +17,11 @@ KERAS implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YA
 4. Run YOLO detection.
 
 
-wget https://pjreddie.com/media/files/yolov3.weights 
+2. wget https://pjreddie.com/media/files/yolov3.weights 
 
 at the model folder run:
 
-python convert.py yolov3.cfg yolov3.weights model_data/yolo.h5
+3. python convert.py ../cfg/yolov3.cfg ../weights/yolov3.weights ../cfg/yolo.h5
 
 the is model ready to run in the server.
 
@@ -30,6 +29,7 @@ the is model ready to run in the server.
 
 To run the server localy:
 
+At the server folder
 python app.py  
 server runs at http://127.0.0.1:5000/ localy,
 use the "seleccionar archivo" button, then select video, once the video is selected click at the "enviar" button, after procesing the output can be found at the server folder as a .yml file called lista
