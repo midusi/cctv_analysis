@@ -25,8 +25,17 @@ def uploader():
         os.system('python '+data['defaultModel']+f' --input {filepath}')
         return render_template('video_procesing.html')
 
-
-
+@app.route("/model_request", methods=['POST'])
+def model_request():
+    if request.method == "POST":
+        f = request.files['file']
+        filename = str(uuid.uuid4())
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        f.save(filepath)
+        os.system('python '+data['defaultModel']+f' --input {filepath}')
+        with open('data.json') as file:
+            result = json.load(file)
+        return result
 
 if __name__ == '__main__':
     app.run(debug=True)
