@@ -2,7 +2,7 @@ import sys
 import argparse
 from yolo import YOLO, detect_video
 from PIL import Image
-
+'''
 def detect_img(yolo):
     while True:
         img = input('Input image filename:')
@@ -14,7 +14,7 @@ def detect_img(yolo):
         else:
             r_image = yolo.detect_image(image)
             r_image.show()
-    yolo.close_session()
+    yolo.close_session()'''
 
 FLAGS = None
 
@@ -63,7 +63,12 @@ if __name__ == '__main__':
 
     FLAGS = parser.parse_args()
 
-    if FLAGS.image:
+    if "input" in FLAGS:
+        detect_video(YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
+    else:
+        print("Must specify at least video_input_path.  See usage with --help.")
+
+    '''if FLAGS.image:
         """
         Image detection mode, disregard any remaining command line arguments
         """
@@ -74,4 +79,4 @@ if __name__ == '__main__':
     elif "input" in FLAGS:
         detect_video(YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
     else:
-        print("Must specify at least video_input_path.  See usage with --help.")
+        print("Must specify at least video_input_path.  See usage with --help.")'''

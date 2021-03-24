@@ -3,36 +3,32 @@ import cv2
 import numpy as np
 import yaml
 import os
-from timeit import default_timer as timer 
+from timeit import default_timer as timer
+import json
+
+relative_path = os.path.dirname(os.path.relpath(__file__))
+
 #Argunmentos ---> ArchivoVideo.mp4 archivo.cfg archivo.weights]
-videoPath = sys.argv[1]
-cfgPath = sys.argv[2]
-weightsPath = sys.argv[3]
+videoPath = '/../../server/videos/'+sys.argv[1]
+cfgPath = '/../cfg/'+sys.argv[2]
+weightsPath = '/../weights/'+sys.argv[3]
+print(relative_path+videoPath)
 
-
-
-
-filepath = 'lista.yaml'
-
-
-cap = cv2.VideoCapture(videoPath)
+cap = cv2.VideoCapture(relative_path+videoPath)
 whT = 320
 confThreshold = 0.5
 nmsThreshold = 0.3
 myList = []
 accum_FPS = 0
 
-
-classesFile = 'coco_names.txt'
+classesFile = relative_path+'/../cfg/coco_names.txt'
 classNames = []
 with open(classesFile,'rt') as f:
     classNames = f.read().rstrip('\n').split('\n')
 
-#print(classNames)
-#print(len (classNames))
 
-modelConfiguration = cfgPath  
-modelWeights = weightsPath
+modelConfiguration = relative_path+cfgPath  
+modelWeights = relative_path+weightsPath
 
 net = cv2.dnn.readNetFromDarknet(modelConfiguration,modelWeights)
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
@@ -44,11 +40,13 @@ curr_fps = 0
 fps = "FPS: ??"
 prev_time = timer()
 
-def yaml_dump(filepath, data):
-    """guardo datos en un archivo yaml"""
-    with open(filepath, "w") as file_descriptor:
-        yaml.dump(data, file_descriptor)
-
+data = {}
+data['list'] = []
+def json_write(data):
+    """guardo datos en un archivo json"""
+    with open('data.json', 'w') as file:
+        json.dump(data, file, indent=4)
+        
 def findObjets(outputs,img):
     hT, wT, cT =img.shape 
     p = 0
@@ -78,7 +76,7 @@ def findObjets(outputs,img):
         #print(classNames[classIds[i]].upper())
         if classNames[classIds[i]].upper() == 'PERSON':
             p = p+1
-    myList.append(p)
+    data['list'].append(p)
     p = 0
 
 while True:
@@ -111,12 +109,13 @@ while True:
         curr_fps = 0
         print(fps)
     #print(myList)
-    contador = 1    
-    for cantPersonasFrame in myList:
-        #print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
-        contador+=1  
-avg_FPS = accum_FPS / sumExec_time
-meanPersons = np.mean(myList)
+contador = 1    
+for cantPersonasFrame in data['list']:
+    #print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
+    contador+=1
+avg_FPS = accum_FPS / sumExec_time 
+json_write(data)
+meanPersons = np.mean(data['list'])
 print('Rendimiento: ----------')
 print('Personas encontradas en promedio por frame : ',meanPersons)
 print('Tiempo total de ejecucion: ',sumExec_time)
@@ -124,5 +123,3 @@ print('FPS promedio de ejecucion: ',avg_FPS)
 print('-----------------------')
 #cv2.imshow('Image',img)
 cv2.waitKey(1)
-#print(myList)
-yaml_dump(filepath,myList)

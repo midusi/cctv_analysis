@@ -18,18 +18,19 @@ from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
+
+#videoPath = sys.argv[1]
+#relative_path = os.path.dirname(os.path.relpath(__file__))
+wd = os.getcwd()
 data = {}
 data['list'] = []
-
-
 def json_write(data):
-    """guardo datos en un archivo json"""
+    #guardo datos en un archivo json
     with open('data.json', 'w') as file:
         json.dump(data, file, indent=4)
 
 
-relative_path = os.path.dirname(os.path.relpath(__file__))
-wd = os.getcwd()
+
 class YOLO(object):
     _defaults = {
         "model_path": '/../cfg/yolo.h5',
