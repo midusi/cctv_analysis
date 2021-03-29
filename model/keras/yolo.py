@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-Class definition of YOLO_v3 style detection model on image and video
-"""
 
+import sys
 import colorsys
 import os
 import json
-from timeit import default_timer as timer
 import numpy as np
 import tensorflow.compat.v1.keras.backend as K
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
+from timeit import default_timer as timer
 from keras.models import load_model
 from keras.layers import Input
 from PIL import Image, ImageFont, ImageDraw
@@ -18,16 +16,14 @@ from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
+from abc import ABCMeta, abstractclassmethod
+
 
 #videoPath = sys.argv[1]
-#relative_path = os.path.dirname(os.path.relpath(__file__))
+relative_path = os.path.dirname(os.path.relpath(__file__))
 wd = os.getcwd()
 data = {}
 data['list'] = []
-def json_write(data):
-    #guardo datos en un archivo json
-    with open('data.json', 'w') as file:
-        json.dump(data, file, indent=4)
 
 
 
@@ -49,13 +45,13 @@ class YOLO(object):
         else:
             return "Unrecognized attribute name '" + n + "'"
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.__dict__.update(self._defaults) # set up default values
-        self.__dict__.update(kwargs) # and update with user overrides
         self.class_names = self._get_class()
         self.anchors = self._get_anchors()
         self.sess = K.get_session()
         self.boxes, self.scores, self.classes = self.generate()
+
 
     def _get_class(self):
         classes_path = relative_path+str(self.classes_path)
@@ -103,7 +99,7 @@ class YOLO(object):
         return boxes, scores, classes
     
     def detect_image(self, image):
-        start = timer()
+
 
         if self.model_image_size != (None, None):
             assert self.model_image_size[0]%32 == 0, 'Multiples of 32 required'
@@ -131,7 +127,6 @@ class YOLO(object):
                 cantNoPersona = cantNoPersona + 1
         data['list'].append((len(out_boxes)-cantNoPersona))
         #print('Encontre {} personas en {}'.format((len(out_boxes)-cantNoPersona), 'imagen'))
-        end = timer()
         #print('tiempo en procesar frame :', end - start)
         return image
 
@@ -139,7 +134,11 @@ class YOLO(object):
     def close_session(self):
         self.sess.close()
 
-def detect_video(yolo, video_path, output_path=""):
+def excecute(yolo, video_path, output_path=""):
+    def json_write(data):
+        #guardo datos en un archivo json
+        with open('{}.json'.format(video_path), 'w') as file:
+            json.dump(data, file, indent=4)
     import cv2
     vid = cv2.VideoCapture(video_path)
     if not vid.isOpened():
@@ -148,45 +147,19 @@ def detect_video(yolo, video_path, output_path=""):
     video_fps       = vid.get(cv2.CAP_PROP_FPS)
     video_size      = (int(vid.get(cv2.CAP_PROP_FRAME_WIDTH)),
                         int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    accum_time = 0
-    accum_FPS = 0
-
-    sumExec_time = 0
-    curr_fps = 0
-    fps = "FPS: ??"
-    prev_time = timer()
     while True:
         return_value, frame = vid.read()
         if not return_value:
             break
         image = Image.fromarray(frame)
         image = yolo.detect_image(image)
-        curr_time = timer()
-        exec_time = curr_time - prev_time
-        prev_time = curr_time
-        accum_time = accum_time + exec_time
-        sumExec_time = sumExec_time + exec_time
-        curr_fps = curr_fps + 1
-        if accum_time > 1:
-            accum_time = accum_time - 1
-            fps = "FPS: " + str(curr_fps)
-            accum_FPS = accum_FPS + curr_fps
-            curr_fps = 0
-            print(fps)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     contador = 1    
+    print(".")
     for cantPersonasFrame in data['list']:
-        #print('Frame :',contador,'cantidad de personas :',cantPersonasFrame)
         contador+=1
-    avg_FPS = accum_FPS / sumExec_time 
     json_write(data)
-    meanPersons = np.mean(data['list'])
-    print('Rendimiento: ----------')
-    print('Rendimiento openCv/yolov3-Keras:')
-    print('Personas encontradas en promedio por frame : ',meanPersons)
-    print('Tiempo total de ejecucion: ',sumExec_time)
-    print('FPS promedio de ejecucion: ',avg_FPS)  
-    print('-----------------------')
     yolo.close_session()
-
+    return data
+#detect_video(YOLO(),videoPath,"")
