@@ -6,12 +6,21 @@ import os
 from timeit import default_timer as timer
 import json
 
+from ..base import BaseModel
+
+class OpenCVDetector(BaseModel):
+    def __init__(self,..,version):
+        
+        videoPath = '/../../server/videos/'+sys.argv[1]
+        cfgPath = '/../cfg/'+sys.argv[2]
+        weightsPath = '/../weights/'+version       
+       
+
+
 relative_path = os.path.dirname(os.path.relpath(__file__))
 
 #Argunmentos ---> ArchivoVideo.mp4 archivo.cfg archivo.weights]
-videoPath = '/../../server/videos/'+sys.argv[1]
-cfgPath = '/../cfg/'+sys.argv[2]
-weightsPath = '/../weights/'+sys.argv[3]
+
 print(relative_path+videoPath)
 
 cap = cv2.VideoCapture(relative_path+videoPath)
