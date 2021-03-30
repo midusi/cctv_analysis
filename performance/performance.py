@@ -18,7 +18,7 @@ print("Termino Ejecucion yolov3-608\n\n")'''
 kerasModel = YOLO()
 print("empezo ejecucion de modelo")
 start = timer()
-resultado = excecute(kerasModel,'people3.mp4',"")
+resultado = kerasModel.analyze_video('people3.mp4')
 end = timer()
 meanPersons = np.mean(resultado['list'])
 print('Rendimiento ----------')
