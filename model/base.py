@@ -1,7 +1,7 @@
 import abc 
 import cv2  
   
-class BaseModel:
+class BaseModel(abc.ABC):
   
   @abc.abstractmethod
   def analyze_frame(self,frame):
