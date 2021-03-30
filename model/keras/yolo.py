@@ -25,7 +25,6 @@ data = {}
 data['list'] = []
 
 
-
 class YOLO(object):
     _defaults = {
         "model_path": '/../cfg/yolo.h5',
@@ -97,7 +96,7 @@ class YOLO(object):
                 score_threshold=self.score, iou_threshold=self.iou)
         return boxes, scores, classes
     
-    def detect_image(self, image):
+    def analyze_frame(self, image):
 
 
         if self.model_image_size != (None, None):
@@ -124,41 +123,29 @@ class YOLO(object):
         for objeto in out_classes:
             if objeto != 0:
                 cantNoPersona = cantNoPersona + 1
-        data['list'].append((len(out_boxes)-cantNoPersona))
-        #print('Encontre {} personas en {}'.format((len(out_boxes)-cantNoPersona), 'imagen'))
-        #print('tiempo en procesar frame :', end - start)
-        return image
+        #data['list'].append((len(out_boxes)-cantNoPersona))
+        return (len(out_boxes)-cantNoPersona)
 
 
     def close_session(self):
         self.sess.close()
 
-def excecute(yolo, video_path, output_path=""):
-    def json_write(data):
-        #guardo datos en un archivo json
-        with open('{}.json'.format(video_path), 'w') as file:
-            json.dump(data, file, indent=4)
-    import cv2
-    vid = cv2.VideoCapture(video_path)
-    if not vid.isOpened():
-        raise IOError("Couldn't open webcam or video")
-    video_FourCC     = cv2.VideoWriter_fourcc(*'XVID')
-    video_fps       = vid.get(cv2.CAP_PROP_FPS)
-    video_size      = (int(vid.get(cv2.CAP_PROP_FRAME_WIDTH)),
-                        int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    while True:
-        print(".")
-        return_value, frame = vid.read()
-        if not return_value:
-            break
-        image = Image.fromarray(frame)
-        image = yolo.detect_image(image)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    contador = 1    
-    for cantPersonasFrame in data['list']:
-        contador+=1
-    json_write(data)
-    yolo.close_session()
-    return data
-#detect_video(YOLO(),videoPath,"")
+    def analyze_video(self, video_path):
+        import cv2
+        vid = cv2.VideoCapture(video_path)
+        if not vid.isOpened():
+            raise IOError("Couldn't open webcam or video")
+        video_FourCC     = cv2.VideoWriter_fourcc(*'XVID')
+        video_fps       = vid.get(cv2.CAP_PROP_FPS)
+        video_size      = (int(vid.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                            int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        results = []
+        while True:
+            print(".")
+            return_value, frame = vid.read()
+            if not return_value:
+                break
+            image = Image.fromarray(frame)
+            results.append(self.analyze_frame(image))
+        return results
+

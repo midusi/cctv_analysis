@@ -31,7 +31,7 @@ def uploader():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
         kerasModel = YOLO()
-        result = excecute(kerasModel,f'{filepath}',"")
+        result = kerasModel.analyze_video(f'{filepath}')
         return render_template('video_procesing.html')
 
 #sube video a la ruta especificada en user_cfg.json y le asigna un ID unico
@@ -46,7 +46,7 @@ def model_request():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
         kerasModel = YOLO()
-        result = excecute(kerasModel,f'{filepath}',"")
+        result = kerasModel.analyze_video(f'{filepath}')
         return result
 
 if __name__ == '__main__':
