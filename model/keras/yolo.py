@@ -16,16 +16,18 @@ from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
 from abc import ABCMeta, abstractclassmethod
+from ..base import BaseModel
 
 
-#videoPath = sys.argv[1]
+
+
 relative_path = os.path.dirname(os.path.relpath(__file__))
 wd = os.getcwd()
 data = {}
 data['list'] = []
 
 
-class YOLO(object):
+class YOLO(BaseModel):
     _defaults = {
         "model_path": '/../cfg/yolo.h5',
         "anchors_path": '/../cfg/yolo_anchors.txt',
@@ -97,8 +99,6 @@ class YOLO(object):
         return boxes, scores, classes
     
     def analyze_frame(self, image):
-
-
         if self.model_image_size != (None, None):
             assert self.model_image_size[0]%32 == 0, 'Multiples of 32 required'
             assert self.model_image_size[1]%32 == 0, 'Multiples of 32 required'

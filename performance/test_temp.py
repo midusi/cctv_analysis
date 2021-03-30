@@ -1,8 +1,8 @@
 import os
 import pathlib
 import sys
-sys.path.insert(0, '../model/keras')
-from yolo import YOLO
+sys.path.insert(0, '../model')
+from base import BaseModel
 from timeit import default_timer as timer
 import numpy as np
 #archivo para pruebas
@@ -10,7 +10,7 @@ import numpy as np
 #os.system(f'python ../model/keras/yolo.py people3.mp4')
 #os.system(f'python ../model/openCv/OpenCv.py people3.mp4 yolov3-320.cfg yolov3.weights')
 
-kerasModel = YOLO()
+kerasModel = BaseModel.load("yolo3")
 print("empezo ejecucion de modelo")
 start = timer()
 resultado = kerasModel.analyze_video('people3.mp4')
