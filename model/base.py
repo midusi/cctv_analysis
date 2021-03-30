@@ -22,3 +22,16 @@ class BaseModel(abc.ABC):
         image = Image.fromarray(frame)
         results.append(self.analyze_frame(image))
     return results
+
+  
+  
+  from yolo import YoloDetector
+  from opencv import OpenCVDetector
+  
+  def load(model_name):
+    if model_name.startswith("yolo"):
+      return YoloDetector(model_name)
+    elif model_name.startswith("opencv"):
+      return OpenCVDetector(model_name)
+    else
+      raise ValueError(f"Model {model_name} not found")
