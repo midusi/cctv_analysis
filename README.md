@@ -12,26 +12,18 @@ KERAS implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YA
 ## Initial setup for model.
 
 1. Clone the repository on your computer.
-2. Download YOLOV3 weights from: [YOLO website](http://pjreddie.com/darknet/yolo/). Or from this drive link https://drive.google.com/file/d/1NUYrGllK8diIkVZbmIjMqR6BiUhwLgCZ/view?usp=sharing , or use de wget instruction above
-3. Convert the YOLO Darknet model to a KERAS model.
-4. Run YOLO detection.
+2. Download YOLOV3 weights and the yolo.h5 file from this drive link https://drive.google.com/drive/folders/1PHLAmDVdO3DWp0Igf2_T_uBnDsvJZghy?usp=sharing , or use de wget instruction above
+3. Put the weights files in the weights folder "/cctv_analysis/model/weights", and the file yolo.h5 inside the cfg folder "/cctv_analysis/model/cfg".
+4. Run the app.
 
-
-2. wget https://pjreddie.com/media/files/yolov3.weights 
-
-at the model folder run:
-
-3. python convert.py ../cfg/yolov3.cfg ../weights/yolov3.weights ../cfg/yolo.h5
-
-the is model ready to run in the server.
-
-### WEB server
 
 To run the server localy:
 
-At the server folder
+At the server folder "cctv_analysis/server/"
 python app.py  
 server runs at http://127.0.0.1:5000/ localy,
-use the "seleccionar archivo" button, then select video, once the video is selected click at the "enviar" button, after procesing the output can be found at the server folder as a .yml file called lista
+use the "seleccionar archivo" button, then select video, once the video is selected click at the "enviar" button, after procesing the output can be found at the files folder (cctv_analysis/server/files" as a json file called data.
+
+PD: the files folder can be modified from the user_cfg.json file at the server folder
 
 

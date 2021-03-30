@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import colorsys
 import os
 import json
 import numpy as np
@@ -148,6 +147,7 @@ def excecute(yolo, video_path, output_path=""):
     video_size      = (int(vid.get(cv2.CAP_PROP_FRAME_WIDTH)),
                         int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     while True:
+        print(".")
         return_value, frame = vid.read()
         if not return_value:
             break
@@ -156,7 +156,6 @@ def excecute(yolo, video_path, output_path=""):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     contador = 1    
-    print(".")
     for cantPersonasFrame in data['list']:
         contador+=1
     json_write(data)
