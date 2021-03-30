@@ -20,5 +20,5 @@ class BaseModel(abc.ABC):
         if not return_value:
             break
         image = Image.fromarray(frame)
-        results.append(self.analyze_image(image))
+        results.append(self.analyze_frame(image))
     return results
