@@ -15,8 +15,18 @@ from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
-from abc import ABCMeta, abstractclassmethod
-from ..base import BaseModel
+#from abc import ABCMeta, abstractclassmethod
+
+#probe de estas maneras --------
+
+#sys.path.insert(0, '..')
+#from base import BaseModel 
+
+#from model.base import BaseModel
+
+from ..base import BaseModel 
+
+
 
 
 
