@@ -11,7 +11,7 @@ class BaseModel(abc.ABC):
 
   
   import sys
-  sys.path.insert(0, 'keras/')
+  #sys.path.insert(0, 'keras/')
   from keras.yolo import YOLO
   #from keras import YOLO
   
