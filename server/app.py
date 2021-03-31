@@ -5,7 +5,8 @@ import uuid
 import json
 import sys
 sys.path.insert(0, '../model/keras')
-from yolo import YOLO, excecute
+
+from model.keras.yolo import YOLO
 
 
 with open('user_cfg.json') as file:
@@ -49,6 +50,5 @@ def model_request():
         result = kerasModel.analyze_video(f'{filepath}')
         return result
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
 
