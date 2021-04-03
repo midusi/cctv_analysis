@@ -10,31 +10,18 @@ tf.compat.v1.disable_eager_execution()
 from timeit import default_timer as timer
 from keras.models import load_model
 from keras.layers import Input
-from PIL import Image, ImageFont, ImageDraw
-from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
-from yolo3.utils import letterbox_image
-import os
 from keras.utils import multi_gpu_model
-#from abc import ABCMeta, abstractclassmethod
-
-#probe de estas maneras --------
-
-#sys.path.insert(0, '..')
-#from base import BaseModel 
-
-#from model.base import BaseModel
-
+from PIL import Image, ImageFont, ImageDraw
+#print(sys.path)
+#sys.path.insert(0, './yolo3')
+#print("syspath modificado",sys.path)
 from ..base import BaseModel 
-
-
-
-
+from model.keras.yolo3.utils import letterbox_image
+from model.keras.yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
+import os
 
 
 relative_path = os.path.dirname(os.path.relpath(__file__))
-wd = os.getcwd()
-data = {}
-data['list'] = []
 
 
 class YOLO(BaseModel):

@@ -30,13 +30,8 @@ print('-----------------------')
             #guardo datos en un archivo json
             with open('{}.json'.format(video_path), 'w') as file:
                 json.dump(data, file, indent=4)
-'''
 
-def load(model_name):
-    print("inicia modelo :",model_name)
-    if model_name.startswith("yolo"):
-        return YOLO()
-    else:
-        raise ValueError(f"Model {model_name} not found")
-'''elif model_name.startswith("opencv"):
-return OpenCVDetector(model_name)'''
+        def json_write(data):
+            """guardo datos en un archivo json"""
+            with open('data.json', 'w') as file:
+                json.dump(data, file, indent=4)'''
