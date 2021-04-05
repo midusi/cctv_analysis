@@ -1,29 +1,70 @@
 import os
 import sys
-sys.path.insert(0, '../model/keras')
-from yolo import YOLO, excecute
+sys.path.insert(0, '..')
+from model.keras.yolo import YOLO
+from model.openCv.OpenCv import OpenCV
 from timeit import default_timer as timer
 import numpy as np
+import json
 
-'''os.system(f'python ../model/yoloOpenCv/probando.py people3.mp4 yolov3-tiny.cfg yolov3-tiny.weights')
-print("Termino Ejecucion yolov3-tiny\n\n")
-os.system(f'python ../model/yoloOpenCv/probando.py people3.mp4 yolov3-320.cfg yolov3.weights')
-print("Termino Ejecucion yolov3-320\n\n")
-os.system(f'python ../model/yoloOpenCv/probando.py people3.mp4 yolov3-416.cfg yolov3.weights')
-print("Termino Ejecucion yolov3-416\n\n")
-os.system(f'python ../model/yoloOpenCv/probando.py people3.mp4 yolov3-608.cfg yolov3.weights')
-print("Termino Ejecucion yolov3-608\n\n")'''
+def load(model_name):
+    if model_name.startswith("keras"):
+        return YOLO()
+    elif model_name.startswith("opencv"):
+        version = model_name.split('_',1)[1]
+        return OpenCV(version)
+    else:
+        raise ValueError(f"Model {model_name} not found")
 
-#Keras model
-kerasModel = YOLO()
-print("empezo ejecucion de modelo")
-start = timer()
-resultado = kerasModel.analyze_video('people3.mp4')
-end = timer()
-meanPersons = np.mean(resultado['list'])
-print('Rendimiento ----------')
-print('Personas encontradas en promedio por frame : ',meanPersons) 
-print("tiempo total : ",end-start)
-print("FPS promedio : ",((len(resultado['list']))/(end-start)))
-print('-----------------------')
-print("Termino Ejecucion keras\n\n")
+#json resultados
+performance = {}
+data = []
+
+def ejecutarModelo(modelName):
+    model = load(modelName)
+    print("empezo ejecucion de modelo")
+    start = timer()
+    resultado = model.analyze_video('people3.mp4')
+    end = timer()
+    meanPersons = np.mean(resultado)
+    tiempoTotal = end - start
+    FPS_Promedio = ((len(resultado))/(end-start))
+    dataJson = {
+        'Modelo': modelName,
+        'PersonasPromedio': meanPersons,
+        'tiempo total': tiempoTotal,
+        'FPS_Promedio': FPS_Promedio
+    }
+    data.append(dataJson)
+    return dataJson
+
+#OpenCV tiny
+modelData = ejecutarModelo('opencv_tiny')
+print(modelData)
+
+#OpenCV 320
+modelData = ejecutarModelo('opencv_320')
+print(modelData)
+
+#OpenCV 416
+modelData = ejecutarModelo('opencv_416')
+print(modelData)
+
+#OpenCV 608
+modelData = ejecutarModelo('opencv_608')
+print(modelData)
+
+#Keras
+modelData = ejecutarModelo('keras_default')
+print(modelData)
+
+
+performance['resumen'] = data
+
+jsonData = json.dumps(performance, indent = 1)
+
+print(jsonData)
+
+
+
+

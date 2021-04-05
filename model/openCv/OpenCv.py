@@ -43,7 +43,7 @@ class OpenCV(BaseModel):
             print('se cargo modelo : ',version)
         
         if version == 'tiny':
-            cfgPath = '/../cfg/yolov3-tiny'
+            cfgPath = '/../cfg/yolov3-tiny.cfg'
             weightsPath = '/../weights/yolov3-tiny.weights'
             classesFile = self.relative_path+'/../cfg/coco_names.txt'
             self.classNames = []
@@ -58,7 +58,7 @@ class OpenCV(BaseModel):
             print('se cargo modelo : ',version)
 
         if version == '416':
-            cfgPath = '/../cfg/yolov3-416'
+            cfgPath = '/../cfg/yolov3-416.cfg'
             weightsPath = '/../weights/yolov3-tiny.weights'
             classesFile = self.relative_path+'/../cfg/coco_names.txt'
             self.classNames = []
@@ -73,7 +73,7 @@ class OpenCV(BaseModel):
             print('se cargo modelo : ',version)
     
         if version == '608':
-            cfgPath = '/../cfg/yolov3-608'
+            cfgPath = '/../cfg/yolov3-608.cfg'
             weightsPath = '/../weights/yolov3-tiny.weights'
             classesFile = self.relative_path+'/../cfg/coco_names.txt'
             self.classNames = []
@@ -134,6 +134,5 @@ class OpenCV(BaseModel):
             outputs = self.net.forward(outputNames)
             self.analyze_frame(outputs,img)
         cv2.waitKey(1)
-        print(self.data)
         return(self.data)
 

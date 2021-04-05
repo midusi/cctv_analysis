@@ -32,9 +32,9 @@ def uploader():
         filename = str(uuid.uuid4())
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
-        kerasModel = YOLO()
-        result = kerasModel.analyze_video(f'{filepath}')
-
+        model = load('opencv_320')
+        result = model.analyze_video(f'{filepath}')
+        #hacer algo con result
         return render_template('video_procesing.html')
 
 #sube video a la ruta especificada en user_cfg.json y le asigna un ID unico
@@ -59,7 +59,7 @@ def model_request():
 
 def load(model_name):
 
-    if model_name.startswith("yolo"):
+    if model_name.startswith("keras"):
         return YOLO()
     elif model_name.startswith("opencv"):
         version = model_name.split('_',1)[1]
