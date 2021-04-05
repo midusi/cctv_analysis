@@ -7,6 +7,7 @@ from timeit import default_timer as timer
 import numpy as np
 import json
 
+
 def load(model_name):
     if model_name.startswith("keras"):
         return YOLO()
@@ -32,7 +33,7 @@ def ejecutarModelo(modelName):
     dataJson = {
         'Modelo': modelName,
         'PersonasPromedio': meanPersons,
-        'tiempo total': tiempoTotal,
+        'tiempoTotal': tiempoTotal,
         'FPS_Promedio': FPS_Promedio
     }
     data.append(dataJson)
@@ -60,9 +61,7 @@ print(modelData)
 
 
 performance['resumen'] = data
-
 jsonData = json.dumps(performance, indent = 1)
-
 print(jsonData)
 
 
