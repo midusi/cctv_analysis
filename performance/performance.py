@@ -20,12 +20,13 @@ def load(model_name):
 #json resultados
 performance = {}
 data = []
+videopath = 'people3.mp4'
 
-def ejecutarModelo(modelName):
+def ejecutarModelo(modelName,videopath):
     model = load(modelName)
     print("empezo ejecucion de modelo")
     start = timer()
-    resultado = model.analyze_video('people3.mp4')
+    resultado = model.analyze_video(videopath) #path de video
     end = timer()
     meanPersons = np.mean(resultado)
     tiempoTotal = end - start
@@ -40,29 +41,30 @@ def ejecutarModelo(modelName):
     return dataJson
 
 #OpenCV tiny
-modelData = ejecutarModelo('opencv_tiny')
+modelData = ejecutarModelo('opencv_tiny',videopath)
 print(modelData)
 
 #OpenCV 320
-modelData = ejecutarModelo('opencv_320')
+modelData = ejecutarModelo('opencv_320',videopath)
 print(modelData)
 
 #OpenCV 416
-modelData = ejecutarModelo('opencv_416')
+modelData = ejecutarModelo('opencv_416',videopath)
 print(modelData)
 
 #OpenCV 608
-modelData = ejecutarModelo('opencv_608')
+modelData = ejecutarModelo('opencv_608',videopath)
 print(modelData)
 
 #Keras
-modelData = ejecutarModelo('keras_default')
+modelData = ejecutarModelo('keras_default',videopath)
 print(modelData)
 
 
-performance['resumen'] = data
-jsonData = json.dumps(performance, indent = 1)
-print(jsonData)
+performance['DatosVideo'] = data
+with open('{}.json'.format(videopath), 'w') as file:
+    json.dump(performance, file, indent=4)
+print(performance)
 
 
 
