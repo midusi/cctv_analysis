@@ -1,6 +1,0 @@
-{
-  "videos_path": "./videos",
-  "default_model": "opencv",
-  "processing_timeout": 60, # minutes
-  "delete_temporary_files": true,
-}

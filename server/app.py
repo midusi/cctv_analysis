@@ -8,13 +8,19 @@ from model.keras.yolo import YOLO
 from model.openCv.OpenCv import OpenCV
 
 
-with open('user_cfg.json') as file:
-    user_cfg = json.load(file)
+with open('app_cfg.json') as file:
+    app_cfg = json.load(file)
 
 
 app = Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = user_cfg['videopath']
+#configuracion inicial
+
+app.config['UPLOAD_FOLDER'] = app_cfg['videos_path']
+model_cfg = app_cfg['default_model'] # por defecto opencv_320
+#para cambiar modelo ----> remplazar x con un numero del 1 al 5
+# 1 = opencv_320  2 = opencv_416  3 = opencv_608  4 = opencv_tiny  5 = keras
+#model_cfg = app_cfg['models']['5'] 
 
 #homepage
 @app.route("/")
@@ -32,14 +38,17 @@ def uploader():
         filename = str(uuid.uuid4())
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
-        model = load('opencv_320')
-        result = model.analyze_video(f'{filepath}')
-        #hacer algo con result
+        model = load(model_cfg)
+        result = {
+            'peoplePerFrame': model.analyze_video(f'{filepath}')
+        } 
+        with open('{}.json'.format(f'{filepath}'), 'w') as file:
+            json.dump(result, file, indent=4)
         return render_template('video_procesing.html')
 
 #sube video a la ruta especificada en user_cfg.json y le asigna un ID unico
 #luego procesa el video y retorna el json generado con la informacion
-#Los videos y resultados van a parar a la carpeta definida en user_cfg.json (por defecto carpeta files)
+#Los videos y resultados van a parar a la carpeta definida en app_cfg.json (por defecto carpeta files)
 
 @app.route("/model_request", methods=['POST'])
 def model_request():
@@ -48,11 +57,13 @@ def model_request():
         filename = str(uuid.uuid4())
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
-        model = load('opencv_320')
-        result = model.analyze_video(f'{filepath}')
-        return {
-            'peoplePerFrame': result
-        }
+        model = load(model_cfg)
+        result = {
+            'peoplePerFrame': model.analyze_video(f'{filepath}')
+        } 
+        with open('{}.json'.format(f'{filepath}'), 'w') as file:
+            json.dump(result, file, indent=4)
+        return result
 
 
 

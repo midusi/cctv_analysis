@@ -1,19 +1,13 @@
 import sys
 import cv2
 import numpy as np
-import yaml
 import os
 from timeit import default_timer as timer
 import json
 from ..base import BaseModel
 
-'''class OpenCVDetector(BaseModel):
-    def __init__(self,..,version):
-        
-        videoPath = '/../../server/videos/'+sys.argv[1]
-        cfgPath = '/../cfg/'+sys.argv[2]
-        weightsPath = '/../weights/'+version  ''' #codigo ejemplo facu     
-       
+ 
+      
 
 
 class OpenCV(BaseModel):
@@ -23,69 +17,29 @@ class OpenCV(BaseModel):
     nmsThreshold = 0.3
     data = []
     accum_FPS = 0
+   
 
     def __init__ (self, version):
-        
-        if version == '320':
-            cfgPath = '/../cfg/yolov3-320.cfg'
+
+        cfgPath = '/../cfg/yolov3-{}.cfg'.format(version)
+        if (version == 'tiny'):
+            weightsPath = '/../weights/yolov3-tiny.weights'
+        else:    
             weightsPath = '/../weights/yolov3.weights'
-            classesFile = self.relative_path+'/../cfg/coco_names.txt'
-            self.classNames = []
-            with open(classesFile,'rt') as f:
-                self.classNames = f.read().rstrip('\n').split('\n')
+        classesFile = self.relative_path+'/../cfg/coco_names.txt'
+        self.classNames = []
+        with open(classesFile,'rt') as f:
+            self.classNames = f.read().rstrip('\n').split('\n')
 
-            modelConfiguration = self.relative_path+cfgPath  
-            modelWeights = self.relative_path+weightsPath
+        modelConfiguration = self.relative_path+cfgPath  
+        modelWeights = self.relative_path+weightsPath
 
-            self.net = cv2.dnn.readNetFromDarknet(modelConfiguration,modelWeights)
-            self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
-            self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
-            print('se cargo modelo : ',version)
+        self.net = cv2.dnn.readNetFromDarknet(modelConfiguration,modelWeights)
+        self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+        self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
+        print('se cargo modelo : ',version)
         
-        if version == 'tiny':
-            cfgPath = '/../cfg/yolov3-tiny.cfg'
-            weightsPath = '/../weights/yolov3-tiny.weights'
-            classesFile = self.relative_path+'/../cfg/coco_names.txt'
-            self.classNames = []
-            with open(classesFile,'rt') as f:
-                self.classNames = f.read().rstrip('\n').split('\n')
-            modelConfiguration = self.relative_path+cfgPath  
-            modelWeights = self.relative_path+weightsPath
 
-            self.net = cv2.dnn.readNetFromDarknet(modelConfiguration,modelWeights)
-            self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
-            self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
-            print('se cargo modelo : ',version)
-
-        if version == '416':
-            cfgPath = '/../cfg/yolov3-416.cfg'
-            weightsPath = '/../weights/yolov3-tiny.weights'
-            classesFile = self.relative_path+'/../cfg/coco_names.txt'
-            self.classNames = []
-            with open(classesFile,'rt') as f:
-                self.classNames = f.read().rstrip('\n').split('\n')
-            modelConfiguration = self.relative_path+cfgPath  
-            modelWeights = self.relative_path+weightsPath
-
-            self.net = cv2.dnn.readNetFromDarknet(modelConfiguration,modelWeights)
-            self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
-            self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
-            print('se cargo modelo : ',version)
-    
-        if version == '608':
-            cfgPath = '/../cfg/yolov3-608.cfg'
-            weightsPath = '/../weights/yolov3-tiny.weights'
-            classesFile = self.relative_path+'/../cfg/coco_names.txt'
-            self.classNames = []
-            with open(classesFile,'rt') as f:
-                self.classNames = f.read().rstrip('\n').split('\n')
-            modelConfiguration = self.relative_path+cfgPath  
-            modelWeights = self.relative_path+weightsPath
-
-            self.net = cv2.dnn.readNetFromDarknet(modelConfiguration,modelWeights)
-            self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
-            self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
-            print('se cargo modelo : ',version)
 
 
     def analyze_frame(self,outputs,img):

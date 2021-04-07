@@ -1,0 +1,13 @@
+{
+  "videos_path": "./server/files",
+  "default_model": "opencv_320",
+  "processing_timeout": 60,
+  "delete_temporary_files": true,
+  "models": {
+    "1": "opencv_320",
+    "2": "opencv_416",
+    "3": "opencv_608",
+    "4": "opencv_tiny",
+    "5": "keras"
+  }
+}
