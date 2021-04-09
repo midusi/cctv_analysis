@@ -5,6 +5,7 @@ import uuid
 import json
 from model.keras.yolo import YOLO
 from model.openCv.OpenCv import OpenCV
+import threading
 
 
 with open('app_cfg.json') as file:
@@ -19,7 +20,8 @@ app.config['UPLOAD_FOLDER'] = app_cfg['videos_path']
 #model_cfg = app_cfg['default_model'] # por defecto opencv_320
 #para cambiar modelo ----> remplazar x con un numero del 1 al 5
 # 1 = opencv_320  2 = opencv_416  3 = opencv_608  4 = opencv_tiny  5 = keras
-model_cfg = app_cfg['models']['5'] 
+model_cfg = app_cfg['models']['5']
+
 
 #homepage
 @app.route("/")
@@ -48,6 +50,16 @@ def uploader():
 #luego procesa el video y retorna el json generado con la informacion
 #Los videos y resultados van a parar a la carpeta definida en app_cfg.json (por defecto carpeta files)
 
+def model_video_processing(filepath):
+
+    model = load(model_cfg)
+    result = {
+        'peoplePerFrame': model.analyze_video(f'{filepath}')
+    } 
+    with open('{}.json'.format(f'{filepath}'), 'w') as file:
+        json.dump(result, file, indent=4)
+    #llama a la api enviandole resultados
+
 @app.route("/model_request", methods=['POST'])
 def model_request():
     if request.method == "POST":
@@ -55,13 +67,12 @@ def model_request():
         filename = str(uuid.uuid4())
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
-        model = load(model_cfg)
-        result = {
-            'peoplePerFrame': model.analyze_video(f'{filepath}')
-        } 
-        with open('{}.json'.format(f'{filepath}'), 'w') as file:
-            json.dump(result, file, indent=4)
-        return result
+        #ejecutar thread en segundo plano (model_request)
+        thread = threading.Thread(target=model_video_processing, args=(filepath, ))
+        thread.daemon = True                            # Daemonize thread
+        thread.start()                                  # Start the execution
+        return filename
+
 
 
 

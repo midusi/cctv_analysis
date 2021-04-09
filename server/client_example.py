@@ -1,5 +1,9 @@
 import requests
 import json
+import os
+from flask import Flask, jsonify, render_template, request, redirect
+
+app = Flask(__name__)
 
 
 #The .mp4 file must locate at this file folder
