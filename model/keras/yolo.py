@@ -51,21 +51,21 @@ class YOLO(BaseModel):
 
 
     def _get_class(self):
-        classes_path = relative_path+str(self.classes_path)
+        classes_path = relative_path+str(self._defaults['classes_path'])
         with open(classes_path) as f:
             class_names = f.readlines()
         class_names = [c.strip() for c in class_names]
         return class_names
 
     def _get_anchors(self):
-        anchors_path = relative_path+str(self.anchors_path)
+        anchors_path = relative_path+str(self._defaults['anchors_path'])
         with open(anchors_path) as f:
             anchors = f.readline()
         anchors = [float(x) for x in anchors.split(',')]
         return np.array(anchors).reshape(-1, 2)
 
     def generate(self):
-        model_path = relative_path+str(self.model_path)
+        model_path = relative_path+str(self._defaults['model_path'])
         assert model_path.endswith('.h5'), 'Keras model or weights must be a .h5 file.'
 
         # Load model, or construct model and load weights.
@@ -77,7 +77,7 @@ class YOLO(BaseModel):
         except:
             self.yolo_model = tiny_yolo_body(Input(shape=(None,None,3)), num_anchors//2, num_classes) \
                 if is_tiny_version else yolo_body(Input(shape=(None,None,3)), num_anchors//3, num_classes)
-            self.yolo_model.load_weights(self.model_path) # make sure model, anchors and classes match
+            self.yolo_model.load_weights(self._defaults['model_path']) # make sure model, anchors and classes match
         else:
             assert self.yolo_model.layers[-1].output_shape[-1] == \
                 num_anchors/len(self.yolo_model.output) * (num_classes + 5), \
@@ -92,14 +92,14 @@ class YOLO(BaseModel):
             self.yolo_model = multi_gpu_model(self.yolo_model, gpus=self.gpu_num)'''
         boxes, scores, classes = yolo_eval(self.yolo_model.output, self.anchors,
                 len(self.class_names), self.input_image_shape,
-                score_threshold=self.score, iou_threshold=self.iou)
+                score_threshold=self._defaults['score'], iou_threshold=self._defaults['iou'])
         return boxes, scores, classes
     
     def analyze_frame(self, image):
-        if self.model_image_size != (None, None):
-            assert self.model_image_size[0]%32 == 0, 'Multiples of 32 required'
-            assert self.model_image_size[1]%32 == 0, 'Multiples of 32 required'
-            boxed_image = letterbox_image(image, tuple(reversed(self.model_image_size)))
+        if self._defaults['model_image_size'] != (None, None):
+            assert self._defaults['model_image_size'][0]%32 == 0, 'Multiples of 32 required'
+            assert self._defaults['model_image_size'][1]%32 == 0, 'Multiples of 32 required'
+            boxed_image = letterbox_image(image, tuple(reversed(self._defaults['model_image_size'])))
         else:
             new_image_size = (image.width - (image.width % 32),
                               image.height - (image.height % 32))

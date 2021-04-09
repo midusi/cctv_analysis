@@ -3,7 +3,6 @@ from flask import Flask, jsonify, render_template, request, redirect
 from werkzeug.utils import secure_filename
 import uuid
 import json
-import sys
 from model.keras.yolo import YOLO
 from model.openCv.OpenCv import OpenCV
 
@@ -17,10 +16,10 @@ app = Flask(__name__)
 #configuracion inicial
 
 app.config['UPLOAD_FOLDER'] = app_cfg['videos_path']
-model_cfg = app_cfg['default_model'] # por defecto opencv_320
+#model_cfg = app_cfg['default_model'] # por defecto opencv_320
 #para cambiar modelo ----> remplazar x con un numero del 1 al 5
 # 1 = opencv_320  2 = opencv_416  3 = opencv_608  4 = opencv_tiny  5 = keras
-#model_cfg = app_cfg['models']['5'] 
+model_cfg = app_cfg['models']['5'] 
 
 #homepage
 @app.route("/")
@@ -33,7 +32,6 @@ def upload_file():
 def uploader():
     
     if request.method == "POST":
-
         f = request.files['archivo']
         filename = str(uuid.uuid4())
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
