@@ -3,6 +3,7 @@ from flask import Flask, jsonify, render_template, request, redirect
 from werkzeug.utils import secure_filename
 import uuid
 import json
+import requests
 from model.keras.yolo import YOLO
 from model.openCv.OpenCv import OpenCV
 import threading
@@ -17,10 +18,10 @@ app = Flask(__name__)
 #configuracion inicial
 
 app.config['UPLOAD_FOLDER'] = app_cfg['videos_path']
-#model_cfg = app_cfg['default_model'] # por defecto opencv_320
+model_cfg = app_cfg['default_model'] # por defecto opencv_320
 #para cambiar modelo ----> remplazar x con un numero del 1 al 5
 # 1 = opencv_320  2 = opencv_416  3 = opencv_608  4 = opencv_tiny  5 = keras
-model_cfg = app_cfg['models']['5']
+#model_cfg = app_cfg['models']['5']
 
 
 #homepage
@@ -32,7 +33,6 @@ def upload_file():
 #luego procesa el video y genera un json con la informacion
 @app.route("/uploader", methods=['POST'])
 def uploader():
-    
     if request.method == "POST":
         f = request.files['archivo']
         filename = str(uuid.uuid4())
@@ -51,18 +51,22 @@ def uploader():
 #Los videos y resultados van a parar a la carpeta definida en app_cfg.json (por defecto carpeta files)
 
 def model_video_processing(filepath):
-
+    print("entre a model_video_processing")
     model = load(model_cfg)
     result = {
         'peoplePerFrame': model.analyze_video(f'{filepath}')
     } 
-    with open('{}.json'.format(f'{filepath}'), 'w') as file:
-        json.dump(result, file, indent=4)
-    #llama a la api enviandole resultados
+    #with open('{}.json'.format(f'{filepath}'), 'w') as file:
+        #json.dump(result, file, indent=4)
+    print("voy a enviar request")
+    url = 'http://127.0.0.1:5001/client_response'
+    respuesta = requests.post(url, json=result)
+    print(respuesta.text)
 
 @app.route("/model_request", methods=['POST'])
 def model_request():
     if request.method == "POST":
+        print("entre a model_request")
         f = request.files['file']
         filename = str(uuid.uuid4())
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
