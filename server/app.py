@@ -50,11 +50,12 @@ def uploader():
 #luego procesa el video y retorna el json generado con la informacion
 #Los videos y resultados van a parar a la carpeta definida en app_cfg.json (por defecto carpeta files)
 
-def model_video_processing(filepath):
+def model_video_processing(filepath, filename):
     print("entre a model_video_processing")
     model = load(model_cfg)
     result = {
-        'peoplePerFrame': model.analyze_video(f'{filepath}')
+        'peoplePerFrame': model.analyze_video(f'{filepath}'),
+        'filename': filename
     } 
     #with open('{}.json'.format(f'{filepath}'), 'w') as file:
         #json.dump(result, file, indent=4)
@@ -72,7 +73,7 @@ def model_request():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
         #ejecutar thread en segundo plano (model_request)
-        thread = threading.Thread(target=model_video_processing, args=(filepath, ))
+        thread = threading.Thread(target=model_video_processing, args=(filepath, filename ))
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution
         return filename
