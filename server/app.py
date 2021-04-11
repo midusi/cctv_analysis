@@ -55,7 +55,7 @@ def model_video_processing(filepath, filename):
     model = load(model_cfg)
     result = {
         'peoplePerFrame': model.analyze_video(f'{filepath}'),
-        'filename': filename
+        'requestID': filename
     } 
     #with open('{}.json'.format(f'{filepath}'), 'w') as file:
         #json.dump(result, file, indent=4)
