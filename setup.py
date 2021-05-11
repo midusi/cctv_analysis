@@ -86,7 +86,7 @@ setup(
         "Source Code": URL,
     },
     # dont include the performance folder 
-    packages=find_packages(exclude=('performance')),
+    #packages=find_packages(exclude=('performance')),
 
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
