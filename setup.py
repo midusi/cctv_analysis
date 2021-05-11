@@ -87,9 +87,10 @@ setup(
     },
     # dont include the performance folder 
     packages=find_packages(exclude=('performance')),
+
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
-
+    py_modules=['cctv_analysis'],
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },

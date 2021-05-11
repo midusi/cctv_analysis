@@ -18,10 +18,10 @@ app = Flask(__name__)
 #configuracion inicial
 
 app.config['UPLOAD_FOLDER'] = app_cfg['videos_path']
-model_cfg = app_cfg['default_model'] # por defecto opencv_320
+#model_cfg = app_cfg['default_model'] # por defecto opencv_320
 #para cambiar modelo ----> remplazar x con un numero del 1 al 5
 # 1 = opencv_320  2 = opencv_416  3 = opencv_608  4 = opencv_tiny  5 = keras
-#model_cfg = app_cfg['models']['5']
+model_cfg = app_cfg['models']['5']
 
 
 #homepage
@@ -44,7 +44,7 @@ def uploader():
         } 
         with open('{}.json'.format(f'{filepath}'), 'w') as file:
             json.dump(result, file, indent=4)
-        return render_template('video_procesing.html')
+        return render_template('video_procesing.html', title="page", jsonfile=json.dumps(result, indent = 1))
 
 #sube video a la ruta especificada en user_cfg.json y le asigna un ID unico
 #luego procesa el video y retorna el json generado con la informacion
@@ -59,7 +59,6 @@ def model_video_processing(filepath, filename):
     } 
     #with open('{}.json'.format(f'{filepath}'), 'w') as file:
         #json.dump(result, file, indent=4)
-    print("voy a enviar request")
     url = 'http://127.0.0.1:5001/client_response'
     respuesta = requests.post(url, json=result)
     print(respuesta.text)
@@ -67,7 +66,6 @@ def model_video_processing(filepath, filename):
 @app.route("/model_request", methods=['POST'])
 def model_request():
     if request.method == "POST":
-        print("entre a model_request")
         f = request.files['file']
         filename = str(uuid.uuid4())
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
