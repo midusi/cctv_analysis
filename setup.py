@@ -94,7 +94,7 @@ setup(
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
-    install_requires= [ "flask","gdown","numpy==1.19.2","python-opencv","tensorflow-gpu","keras","pillow","matplotlib","tqdm"],
+    install_requires= [ "flask","gdown","numpy==1.19.2","opencv-python","tensorflow-gpu","keras","pillow","matplotlib","tqdm"],
     include_package_data=True,
     license='GNU Affero General Public License v3 or later (AGPLv3+)',
     classifiers=[

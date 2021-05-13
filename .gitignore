@@ -94,6 +94,7 @@ celerybeat-schedule
 .venv
 venv/
 ENV/
+cctv_venv/
 
 # Spyder project settings
 .spyderproject
