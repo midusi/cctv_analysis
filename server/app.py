@@ -7,9 +7,12 @@ import requests
 from model.keras.yolo import YOLO
 from model.openCv.OpenCv import OpenCV
 import threading
+from pathlib import Path
 
-print(os.getcwd())
-with open('app_cfg.json') as file:
+path_cfg = Path(__file__).parent / "../cctv_analysis/app_cfg.json"
+
+
+with path_cfg.open() as file:
     app_cfg = json.load(file)
 
 
@@ -17,12 +20,12 @@ app = Flask(__name__)
 
 #configuracion inicial
 
-app.config['UPLOAD_FOLDER'] = app_cfg['videos_path']
+app.config['UPLOAD_FOLDER'] = Path(__file__).parent / app_cfg['videos_path']
 #app.config['UPLOAD_FOLDER'] = "../server/files"
 #model_cfg = app_cfg['x'] # por defecto opencv_320
 #para cambiar modelo ----> remplazar x con un numero del 1 al 5
 # 1 = opencv_320  2 = opencv_416  3 = opencv_608  4 = opencv_tiny  5 = keras
-model_cfg = app_cfg['5']
+model_cfg = app_cfg['models']['5']
 
 
 #homepage

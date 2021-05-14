@@ -19,6 +19,7 @@ from ..base import BaseModel
 from model.keras.yolo3.utils import letterbox_image
 from model.keras.yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 import os
+from pathlib import Path
 
 
 relative_path = os.path.dirname(os.path.relpath(__file__))
@@ -26,9 +27,9 @@ relative_path = os.path.dirname(os.path.relpath(__file__))
 
 class YOLO(BaseModel):
     _defaults = {
-        "model_path": '/../cfg/yolo.h5',
-        "anchors_path": '/../cfg/yolo_anchors.txt',
-        "classes_path": '/../cfg/coco_classes.txt',
+        "model_path": str(Path(__file__).parent / "../cfg/yolo.h5"),
+        "anchors_path": str(Path(__file__).parent / "../cfg/yolo_anchors.txt"),
+        "classes_path": str(Path(__file__).parent / "../cfg/coco_classes.txt"),
         "score" : 0.3,
         "iou" : 0.45,
         "model_image_size" : (416, 416),
@@ -51,21 +52,21 @@ class YOLO(BaseModel):
 
 
     def _get_class(self):
-        classes_path = relative_path+str(self._defaults['classes_path'])
+        classes_path = self._defaults['classes_path']
         with open(classes_path) as f:
             class_names = f.readlines()
         class_names = [c.strip() for c in class_names]
         return class_names
 
     def _get_anchors(self):
-        anchors_path = relative_path+str(self._defaults['anchors_path'])
+        anchors_path = self._defaults['anchors_path']
         with open(anchors_path) as f:
             anchors = f.readline()
         anchors = [float(x) for x in anchors.split(',')]
         return np.array(anchors).reshape(-1, 2)
 
     def generate(self):
-        model_path = relative_path+str(self._defaults['model_path'])
+        model_path = self._defaults['model_path']
         assert model_path.endswith('.h5'), 'Keras model or weights must be a .h5 file.'
 
         # Load model, or construct model and load weights.
