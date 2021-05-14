@@ -14,7 +14,6 @@ google-auth==1.28.0
 google-auth-oauthlib==0.4.4
 google-pasta==0.2.0
 grpcio==1.32.0
-h5py==2.10.0
 idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.3
@@ -52,3 +51,4 @@ typing-extensions==3.7.4.3
 urllib3==1.26.4
 Werkzeug==1.0.1
 wrapt==1.12.1
+h5py==2.10.0
